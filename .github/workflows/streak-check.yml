@@ -1,0 +1,73 @@
+name: GitHub Streak Reminder
+
+on:
+  schedule:
+    - cron: '0 12 * * *' # 毎日 UTC 12:00 = JST 21:00
+  workflow_dispatch: # 手動実行用
+
+jobs:
+  check-contribution:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check GitHub contribution and notify
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            あなたは GitHub の草チェック Bot です。以下のタスクを実行してください。
+
+            ## タスク
+            1. GitHub GraphQL API を使用して、ユーザー `axelaspor2` の今日のコントリビューション数を取得
+            2. コントリビューション数が 0 の場合、Discord Webhook に通知を送信
+            3. コントリビューション数が 1 以上の場合は何もしない
+
+            ## 実行手順
+
+            ### Step 1: 今日の日付を取得（JST 基準）
+            ```bash
+            TZ=Asia/Tokyo date +%Y-%m-%d
+            ```
+
+            ### Step 2: GitHub GraphQL API でコントリビューションを取得
+            ```bash
+            gh api graphql -f query='
+            query {
+              user(login: "axelaspor2") {
+                contributionsCollection {
+                  contributionCalendar {
+                    weeks {
+                      contributionDays {
+                        contributionCount
+                        date
+                      }
+                    }
+                  }
+                }
+              }
+            }'
+            ```
+
+            取得したデータから今日の日付に該当する `contributionCount` を確認してください。
+
+            ### Step 3: Discord 通知（コントリビューションが 0 の場合のみ）
+            コントリビューション数が 0 の場合のみ、以下の curl コマンドで Discord に通知を送信：
+
+            ```bash
+            curl -H "Content-Type: application/json" \
+                 -d '{"content": "今日はまだ GitHub に草が生えていません！\n\n忘れずにコミットしましょう！\n\nhttps://github.com/axelaspor2"}' \
+                 "$DISCORD_WEBHOOK_URL"
+            ```
+
+            ### Step 4: 結果報告
+            - 草があった場合: 「今日の草: X コントリビューション」と報告
+            - 草がなかった場合: 「草なし！Discord に通知しました」と報告
+          claude_args: '--max-turns 10'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
