@@ -70,7 +70,7 @@ jobs:
 
             ### Step 4: 結果報告
             送信したメッセージの内容を報告してください
-          claude_args: '--max-turns 10'
+          claude_args: '--max-turns 20'
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
