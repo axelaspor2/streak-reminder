@@ -25,8 +25,7 @@ jobs:
 
             ## タスク
             1. GitHub GraphQL API を使用して、ユーザー `axelaspor2` の今日のコントリビューション数を取得
-            2. コントリビューション数が 0 の場合、Discord Webhook に通知を送信
-            3. コントリビューション数が 1 以上の場合は何もしない
+            2. コントリビューション数に応じて Discord Webhook に通知を送信
 
             ## 実行手順
 
@@ -56,18 +55,21 @@ jobs:
 
             取得したデータから今日の日付に該当する `contributionCount` を確認してください。
 
-            ### Step 3: Discord 通知（コントリビューションが 0 の場合のみ）
-            コントリビューション数が 0 の場合のみ、以下の curl コマンドで Discord に通知を送信：
+            ### Step 3: Discord 通知
+            コントリビューション数に応じて、以下の curl コマンドで Discord に通知を送信してください。
+            メッセージ内容はあなたの気まぐれで自由に考えてください！
+
+            - 草がなかった場合: 励ましや煽りのメッセージ
+            - 草があった場合: 褒めたり、称賛したり、ユーモアのあるコメント
 
             ```bash
             curl -H "Content-Type: application/json" \
-                 -d '{"content": "今日はまだ GitHub に草が生えていません！\n\n忘れずにコミットしましょう！\n\nhttps://github.com/axelaspor2"}' \
+                 -d '{"content": "ここに自由なメッセージを入れてください"}' \
                  "$DISCORD_WEBHOOK_URL"
             ```
 
             ### Step 4: 結果報告
-            - 草があった場合: 「今日の草: X コントリビューション」と報告
-            - 草がなかった場合: 「草なし！Discord に通知しました」と報告
+            送信したメッセージの内容を報告してください
           claude_args: '--max-turns 10'
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
