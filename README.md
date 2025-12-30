@@ -12,16 +12,26 @@
 4. 通知を送信したいチャンネルを選択
 5. 「ウェブフック URL をコピー」をクリック
 
-### 2. GitHub Secrets の設定
+### 2. Claude OAuth トークンの生成
+
+Claude Pro/Team サブスクリプションを使用して認証します。
+
+```bash
+claude setup-token
+```
+
+生成されたトークンをコピーしてください。
+
+### 3. GitHub Secrets の設定
 
 リポジトリの Settings → Secrets and variables → Actions で以下を追加：
 
 | Secret 名 | 説明 |
 |-----------|------|
-| `ANTHROPIC_API_KEY` | Claude API キー（[Anthropic Console](https://console.anthropic.com/) から取得） |
+| `CLAUDE_CODE_OAUTH_TOKEN` | Claude OAuth トークン（上記で生成） |
 | `DISCORD_WEBHOOK_URL` | Discord Webhook URL（上記で取得） |
 
-### 3. 動作確認
+### 4. 動作確認
 
 1. リポジトリの Actions タブを開く
 2. 「GitHub Streak Reminder」ワークフローを選択

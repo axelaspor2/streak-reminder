@@ -18,7 +18,7 @@ jobs:
       - name: Check GitHub contribution and notify
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
             あなたは GitHub の草チェック Bot です。以下のタスクを実行してください。
 
